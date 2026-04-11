@@ -1,4 +1,4 @@
-# 📊 SalesIQ – Smart Coaching AI
+# 📊 SalesIQ – Smart asssist and Coaching AI
 
 An AI-powered sales call analysis platform that evaluates conversations and provides actionable coaching insights such as talk ratio, interruptions, and question quality.
 
