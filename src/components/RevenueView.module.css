@@ -1,0 +1,80 @@
+.view { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.header { display: flex; align-items: center; justify-content: space-between; padding: 20px 28px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.title { font-family: var(--font-head); font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
+.sub { font-size: 12px; color: var(--text3); margin-top: 3px; }
+.periodTabs { display: flex; gap: 4px; }
+.tab { font-size: 12px; padding: 6px 14px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--text2); cursor: pointer; font-family: var(--font-body); transition: all 0.15s; }
+.tab:hover { border-color: var(--border2); color: var(--text); }
+.tabActive { background: rgba(79,142,255,0.15); color: var(--accent); border-color: rgba(79,142,255,0.35); }
+.scrollArea { flex: 1; overflow-y: auto; padding: 24px 28px; display: flex; flex-direction: column; gap: 24px; }
+
+/* KPI Strip */
+.kpiStrip { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+.kpiCard { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; position: relative; overflow: hidden; transition: border-color 0.15s; }
+.kpiCard:hover { border-color: var(--border2); }
+.kpiAccent { position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+.kpiLabel { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+.kpiVal { font-size: 22px; font-weight: 800; font-family: var(--font-head); letter-spacing: -0.5px; margin-bottom: 4px; }
+.kpiSub { font-size: 11px; color: var(--text3); }
+
+/* Quota */
+.quotaSection { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; }
+.quotaHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.quotaTitle { font-size: 14px; font-weight: 600; color: var(--text); }
+.quotaPct { font-size: 13px; color: var(--text2); }
+.quotaTrack { position: relative; height: 10px; background: var(--surface3); border-radius: 5px; overflow: hidden; margin-bottom: 10px; }
+.quotaClosed { position: absolute; left: 0; top: 0; height: 100%; background: #34d399; border-radius: 5px; transition: width 0.5s ease; }
+.quotaForecast { position: absolute; top: 0; height: 100%; background: rgba(79,142,255,0.4); }
+.quotaTarget { position: absolute; top: -18px; transform: translateX(-50%); font-size: 10px; color: var(--text3); white-space: nowrap; }
+.quotaTarget::after { content: ''; position: absolute; bottom: -10px; left: 50%; width: 1px; height: 10px; background: var(--text3); }
+.quotaLegend { display: flex; gap: 20px; flex-wrap: wrap; }
+.quotaLegend span { font-size: 12px; color: var(--text2); display: flex; align-items: center; gap: 6px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+
+/* Charts */
+.chartsGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.chartsGrid2 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.chartCard { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r); padding: 18px 20px; }
+.wide { grid-column: span 1; }
+.chartHead { margin-bottom: 16px; }
+.chartTitle { font-size: 14px; font-weight: 600; color: var(--text); }
+.chartSub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.chartCanvas { position: relative; }
+.donutWrap { display: flex; flex-direction: column; gap: 16px; }
+.donutLegend { display: flex; flex-direction: column; gap: 8px; }
+.legendRow { display: flex; align-items: center; gap: 8px; }
+.legendDot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.legendName { flex: 1; font-size: 12.5px; color: var(--text2); }
+.legendVal { font-size: 12.5px; font-weight: 600; color: var(--text); }
+
+/* Reps */
+.repSection { }
+.sectionTitle { font-size: 15px; font-weight: 700; color: var(--text); font-family: var(--font-head); margin-bottom: 14px; }
+.repGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.repCard { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r); padding: 18px; display: flex; flex-direction: column; gap: 14px; transition: border-color 0.15s; }
+.repCard:hover { border-color: var(--border2); }
+.repTop { display: flex; align-items: center; gap: 12px; }
+.repAvatar { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; font-family: var(--font-head); flex-shrink: 0; }
+.repName { font-size: 14px; font-weight: 600; color: var(--text); }
+.repDeals { font-size: 11.5px; color: var(--text3); margin-top: 1px; }
+.repRank { margin-left: auto; font-size: 18px; font-weight: 800; color: var(--text3); font-family: var(--font-head); }
+.repStats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.repStat { display: flex; flex-direction: column; gap: 2px; align-items: center; background: var(--surface3); border-radius: 8px; padding: 8px 4px; }
+.repStatVal { font-size: 13px; font-weight: 700; color: var(--text); font-family: var(--font-head); }
+.repStatLabel { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; }
+.repQuota { display: flex; flex-direction: column; gap: 6px; }
+.repQuotaTop { display: flex; justify-content: space-between; font-size: 12px; color: var(--text3); }
+.repQuotaTop span:last-child { font-weight: 700; }
+.repTrack { height: 4px; background: var(--surface3); border-radius: 2px; overflow: hidden; }
+.repFill { height: 100%; border-radius: 2px; transition: width 0.5s ease; }
+
+/* Funnel */
+.funnelSection { }
+.funnel { display: flex; flex-direction: column; gap: 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; }
+.funnelStage { display: flex; flex-direction: column; gap: 6px; }
+.funnelBar { height: 6px; background: var(--surface3); border-radius: 3px; overflow: hidden; }
+.funnelFill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+.funnelMeta { display: flex; align-items: center; gap: 12px; }
+.funnelName { flex: 1; font-size: 13px; color: var(--text2); }
+.funnelCount { font-size: 12px; color: var(--text3); }
+.funnelRate { font-size: 13px; font-weight: 700; min-width: 36px; text-align: right; }

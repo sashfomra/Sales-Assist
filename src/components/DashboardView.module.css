@@ -1,0 +1,81 @@
+.view { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+.header { display:flex; align-items:center; justify-content:space-between; padding:20px 28px 16px; border-bottom:1px solid var(--border); flex-shrink:0; }
+.title { font-family:var(--font-head); font-size:22px; font-weight:800; color:var(--text); letter-spacing:-0.5px; }
+.sub { font-size:12px; color:var(--text3); margin-top:3px; }
+.date { font-size:12.5px; color:var(--text2); }
+.scrollArea { flex:1; overflow-y:auto; padding:22px 28px; display:flex; flex-direction:column; gap:20px; }
+
+/* KPIs */
+.kpiRow { display:grid; grid-template-columns:repeat(6,1fr); gap:12px; }
+.kpiCard { background:var(--surface2); border:1px solid var(--border); border-radius:var(--r); padding:14px 16px; transition:border-color 0.15s; }
+.kpiCard:hover { border-color:var(--border2); }
+.kpiTop { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.kpiLabel { font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:0.07em; }
+.kpiDelta { font-size:11px; font-weight:600; }
+.kpiVal { font-size:22px; font-weight:800; font-family:var(--font-head); letter-spacing:-0.5px; }
+
+/* Grids */
+.mainGrid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.bottomGrid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+.card { background:var(--surface2); border:1px solid var(--border); border-radius:var(--r); padding:18px 20px; display:flex; flex-direction:column; gap:14px; }
+.cardHead { display:flex; align-items:center; justify-content:space-between; }
+.cardTitle { font-size:14px; font-weight:600; color:var(--text); }
+.sub2 { font-size:11.5px; color:var(--text3); }
+
+/* Live chip */
+.liveChip { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--green); background:rgba(52,211,153,0.1); border:1px solid rgba(52,211,153,0.2); padding:3px 9px; border-radius:20px; }
+.liveDot { width:6px; height:6px; border-radius:50%; background:var(--green); animation:pulse 2s ease infinite; }
+
+/* Activity */
+.activityList { display:flex; flex-direction:column; gap:12px; }
+.activityRow { display:flex; gap:10px; align-items:flex-start; }
+.activityIcon { font-size:14px; flex-shrink:0; margin-top:1px; }
+.activityBody { flex:1; }
+.activityText { font-size:13px; color:var(--text2); line-height:1.4; }
+.activityMeta { font-size:11px; color:var(--text3); margin-top:2px; }
+
+/* At-risk */
+.riskList { display:flex; flex-direction:column; gap:10px; }
+.riskRow { display:flex; gap:12px; align-items:center; background:rgba(248,113,113,0.06); border:1px solid rgba(248,113,113,0.15); border-radius:var(--r-sm); padding:10px 12px; }
+.riskLeft { flex:1; }
+.riskCo { font-size:13px; font-weight:600; color:var(--text); }
+.riskNote { font-size:11.5px; color:var(--text3); margin-top:2px; }
+.riskRight { display:flex; flex-direction:column; align-items:flex-end; gap:3px; }
+.riskDays { font-size:11px; color:var(--red); font-weight:600; }
+.riskVal { font-size:13px; font-weight:700; color:var(--text); font-family:var(--font-head); }
+.riskCount { font-size:12px; padding:2px 8px; border-radius:20px; background:rgba(248,113,113,0.15); color:var(--red); }
+.empty { font-size:13px; color:var(--text3); text-align:center; padding:20px 0; }
+
+/* Closing */
+.closingList { display:flex; flex-direction:column; gap:10px; }
+.closingRow { display:flex; align-items:center; gap:10px; }
+.closingInit { width:32px; height:32px; border-radius:8px; background:var(--surface3); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:var(--accent); flex-shrink:0; }
+.closingBody { flex:1; }
+.closingCo { font-size:13px; font-weight:600; color:var(--text); }
+.closingClose { font-size:11px; color:var(--text3); margin-top:1px; }
+.closingRight { display:flex; flex-direction:column; align-items:flex-end; gap:2px; }
+.closingVal { font-size:13px; font-weight:700; color:var(--text); font-family:var(--font-head); }
+.closingProb { font-size:11px; font-weight:600; }
+
+/* Tasks */
+.taskList { display:flex; flex-direction:column; gap:8px; }
+.taskRow { display:flex; align-items:center; gap:10px; }
+.taskCheck { width:14px; height:14px; border:1.5px solid var(--border2); border-radius:4px; flex-shrink:0; }
+.taskBody { flex:1; }
+.taskTitle { font-size:12.5px; color:var(--text); line-height:1.4; }
+.taskMeta { font-size:11px; color:var(--text3); }
+.taskCount { font-size:12px; color:var(--text3); }
+.taskPriority { font-size:10px; font-weight:600; padding:2px 8px; border-radius:20px; border:1px solid; white-space:nowrap; }
+
+/* Rep leaderboard mini */
+.repList { display:flex; flex-direction:column; gap:12px; }
+.repRow { display:flex; align-items:center; gap:10px; }
+.repRank { font-size:13px; font-weight:700; color:var(--text3); width:20px; }
+.repAv { width:28px; height:28px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0; }
+.repInfo { flex:1; }
+.repName { font-size:13px; font-weight:600; color:var(--text); margin-bottom:4px; }
+.repBar { height:3px; background:var(--surface3); border-radius:2px; overflow:hidden; }
+.repFill { height:100%; border-radius:2px; }
+.repMeta { display:flex; flex-direction:column; align-items:flex-end; gap:1px; font-size:12px; font-weight:600; }
+
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }

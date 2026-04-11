@@ -1,0 +1,226 @@
+.view { flex: 1; display: flex; overflow: hidden; }
+
+.listPane {
+  width: 300px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.listHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 20px 20px 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.title {
+  font-family: var(--font-head);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.count {
+  font-size: 12px;
+  color: var(--text3);
+}
+
+.list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.callCard {
+  width: 100%;
+  padding: 14px 20px;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.12s;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.callCard:hover { background: var(--surface2); }
+.callCard.callActive { background: rgba(79,142,255,0.07); }
+
+.callTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.callType {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.sentiment { font-size: 11px; font-weight: 600; }
+
+.callCo {
+  font-size: 12px;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.callMeta {
+  display: flex;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--text3);
+}
+
+.callOutcome {
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.4;
+}
+
+/* Detail pane */
+.detailPane {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.detailHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  gap: 16px;
+}
+
+.detailType {
+  font-family: var(--font-head);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.4px;
+}
+
+.detailMeta {
+  font-size: 12.5px;
+  color: var(--text3);
+  margin-top: 4px;
+}
+
+.sentimentBadge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.outcomeBanner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: rgba(52,211,153,0.08);
+  border: 1px solid rgba(52,211,153,0.2);
+  border-radius: var(--r-sm);
+  font-size: 13.5px;
+  color: #34d399;
+  margin-bottom: 24px;
+}
+
+.outcomeIcon { font-size: 15px; }
+
+.section { padding: 16px 0; border-top: 1px solid var(--border); }
+
+.sectionLabel {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--text3);
+  margin-bottom: 12px;
+}
+
+.summary {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text2);
+}
+
+.moments { display: flex; flex-direction: column; gap: 8px; }
+
+.moment {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text2);
+}
+
+.momentIndex {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(79,142,255,0.15);
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.twoCol {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 24px;
+}
+
+.objection, .nextStep {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--text2);
+  margin-bottom: 8px;
+}
+
+.objIcon { color: var(--amber); font-size: 13px; flex-shrink: 0; }
+.nextIcon { color: var(--accent); font-size: 13px; flex-shrink: 0; }
+
+.askAIBtn {
+  margin-top: 24px;
+  padding: 13px;
+  border-radius: var(--r-sm);
+  border: 1px solid rgba(79,142,255,0.3);
+  background: rgba(79,142,255,0.1);
+  color: var(--accent);
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all 0.15s;
+  width: 100%;
+}
+
+.askAIBtn:hover {
+  background: rgba(79,142,255,0.18);
+  border-color: rgba(79,142,255,0.5);
+}

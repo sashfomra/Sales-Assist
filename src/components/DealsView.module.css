@@ -1,0 +1,341 @@
+.view {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* Table pane */
+.tablePane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-right: 1px solid var(--border);
+}
+
+.tableHeader {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.title {
+  font-family: var(--font-head);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.5px;
+  margin-bottom: 14px;
+}
+
+.filtersWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.newDealBtn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font-body);
+}
+
+.newDealBtn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.filters {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.filterBtn {
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: var(--font-body);
+}
+
+.filterBtn:hover { border-color: var(--border2); color: var(--text); }
+
+.filterActive {
+  background: rgba(79,142,255,0.15);
+  color: var(--accent);
+  border-color: rgba(79,142,255,0.35);
+}
+
+/* Table */
+.table {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.tableHead {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 0.8fr 1fr 1fr;
+  padding: 10px 24px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.tableBody { display: flex; flex-direction: column; }
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 0.8fr 1fr 1fr;
+  padding: 14px 24px;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.12s;
+  text-align: left;
+  width: 100%;
+  align-items: center;
+}
+
+.tableRow:hover { background: var(--surface2); }
+.tableRow.rowActive { background: rgba(79,142,255,0.07); }
+
+.colCompany {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.companyInit {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--surface3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.colCompany > span:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.colCompany strong {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.colCompany small {
+  font-size: 11.5px;
+  color: var(--text3);
+}
+
+.stagePill {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 20px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+
+.valCell {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  font-family: var(--font-head);
+}
+
+.dateCell {
+  font-size: 12px;
+  color: var(--text2);
+}
+
+.ownerCell {
+  font-size: 12.5px;
+  color: var(--text2);
+}
+
+/* Detail pane */
+.detailPane {
+  width: 300px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 20px;
+  overflow-y: auto;
+  gap: 0;
+  background: var(--surface);
+}
+
+.detailHeader {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.detailInit {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-sm);
+  background: rgba(79,142,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--accent);
+  font-family: var(--font-head);
+  flex-shrink: 0;
+}
+
+.detailName {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text);
+  font-family: var(--font-head);
+  letter-spacing: -0.3px;
+}
+
+.detailContact {
+  font-size: 12px;
+  color: var(--text3);
+  margin-top: 2px;
+}
+
+/* Stats */
+.detailStats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.stat {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.statVal {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text);
+  font-family: var(--font-head);
+}
+
+.statLabel {
+  font-size: 10px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+/* Sections */
+.detailSection {
+  padding: 14px 0;
+  border-top: 1px solid var(--border);
+}
+
+.detailSectionLabel {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--text3);
+  margin-bottom: 8px;
+}
+
+.detailNotes {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+
+.activities { display: flex; flex-direction: column; gap: 7px; }
+
+.activity {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12.5px;
+  color: var(--text2);
+}
+
+.activityDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: var(--surface3);
+  color: var(--text2);
+  border: 1px solid var(--border);
+}
+
+.askAIBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  border-radius: var(--r-sm);
+  border: 1px solid rgba(79,142,255,0.3);
+  background: rgba(79,142,255,0.1);
+  color: var(--accent);
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.askAIBtn:hover {
+  background: rgba(79,142,255,0.18);
+  border-color: rgba(79,142,255,0.5);
+}
