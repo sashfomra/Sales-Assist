@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { parseJsonFromText } from "../services/gemini";
 import styles from "./AnalyzeCallView.module.css";
 
 // ── Groq multimodal audio analysis with Whisper ─────────────────────
@@ -162,9 +163,11 @@ async function analyzeWithGroq(apiKey, file) {
     const responseText = analysisData.choices?.[0]?.message?.content;
     if (!responseText) throw new Error("Empty response from analysis");
 
-    // Parse the JSON response
-    const clean = responseText.replace(/```json\s*/g, "").replace(/```\s*/g, "").trim();
-    const parsed = JSON.parse(clean);
+    // Parse the JSON response even if the model wrapped it in markdown fences or extra text.
+    const parsed = parseJsonFromText(responseText);
+    if (!parsed) {
+      throw new Error("Unable to parse analysis response as JSON");
+    }
 
     // Add the transcript to the result
     return {

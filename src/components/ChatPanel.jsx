@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import ChatMessage from "./ChatMessage";
-import { queryGemini, parseChartFromResponse, stripChartBlock } from "../services/gemini";
+import { queryGemini, parseChartFromResponse } from "../services/gemini";
 import { retrieveContext, shouldShowChart } from "../data/crm";
 import styles from "./ChatPanel.module.css";
 
@@ -81,14 +81,15 @@ export default function ChatPanel({ apiKey, prefillDeal, prefillTranscript }) {
         .slice(-8)
         .map(m => ({ role: m.role, content: m.content }));
 
-      const raw = await queryGemini(apiKey, userText, context, history, chartHint);
-      const chart = parseChartFromResponse(raw);
-      const content = stripChartBlock(raw);
+      const response = await queryGemini(apiKey, userText, context, history, chartHint);
+      const content = response.content || "";
+      const chart = response.chart || parseChartFromResponse(response.rawText || content);
+      const structured = response.structured || null;
 
       setMessages(prev =>
         prev.map(m =>
           m.id === loadingMsg.id
-            ? { ...m, content, chart, isLoading: false }
+            ? { ...m, content, chart, structured, isLoading: false }
             : m
         )
       );

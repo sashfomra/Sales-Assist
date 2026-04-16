@@ -16,6 +16,7 @@ function fmt(n) {
 const getNav = (deals) => [
   { id:"dashboard", icon:"⚡", label:"Command Center" },
   { id:"chat",      icon:"🤖", label:"AI Assistant" },
+  { id:"liveAssist", icon:"🎧", label:"Live Assist", badge:"LIVE" },
   { id:"revenue",   icon:"💰", label:"Revenue",  badge: null },
   { id:"pipeline",  icon:"📊", label:"Pipeline" },
   { id:"deals",     icon:"🤝", label:"Deals",    count: deals.filter(d=>!d.stage.startsWith("Closed")).length },

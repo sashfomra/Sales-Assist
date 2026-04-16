@@ -11,11 +11,13 @@ import RevenueView from "./components/RevenueView";
 import ContactsView from "./components/ContactsView";
 import TasksView from "./components/TasksView";
 import AnalyzeCallView from "./components/AnalyzeCallView";
+import LiveAssistView from "./components/LiveAssistView";
 import styles from "./App.module.css";
 
 const VIEW_LABELS = {
   dashboard: "Command Center",
   chat: "AI Assistant",
+  liveAssist: "Live Assist",
   revenue: "Revenue & Forecast",
   pipeline: "Pipeline Board",
   deals: "Deals",
@@ -81,6 +83,7 @@ export default function App() {
         <div className={styles.content}>
           {view === "dashboard" && <DashboardView deals={deals} onNavigate={setView} />}
           {view === "chat" && <ChatPanel apiKey={apiKey} prefillDeal={prefillDeal} prefillTranscript={prefillTranscript} />}
+          {view === "liveAssist" && <LiveAssistView apiKey={apiKey} deals={deals} />}
           {view === "revenue" && <RevenueView deals={deals} />}
           {view === "pipeline" && <PipelineView deals={deals} onDealClick={handleDealClick} />}
           {view === "deals" && <DealsView deals={deals} onAskAI={handleAskAI} onAddDeal={handleAddDeal} />}

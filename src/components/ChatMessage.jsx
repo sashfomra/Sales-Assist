@@ -112,6 +112,102 @@ function SalesChart({ config }) {
 export default function ChatMessage({ msg }) {
   const isUser = msg.role === "user";
 
+  function renderStructuredData(structured) {
+    if (!structured || typeof structured !== "object") return null;
+
+    const fields = [
+      ["Headline", structured.headline],
+      ["Summary", structured.summary],
+      ["Deal Value", structured.deal_value],
+      ["Timeline", structured.timeline],
+      ["Client", structured.client_name],
+      ["Decision Maker", structured.decision_maker],
+      ["Sentiment", structured.sentiment],
+      ["Deal Score", structured.deal_score],
+      ["Next Best Action", structured.nextBestAction],
+    ].filter(([, value]) => value !== undefined && value !== null && value !== "");
+
+    const listFields = [
+      ["Risks", structured.risks],
+      ["Next Steps", structured.next_steps],
+      ["Alerts", structured.alerts],
+      ["Strategic Tips", structured.strategicTips],
+      ["Suggested Responses", structured.suggestedResponses],
+    ].filter(([, value]) => Array.isArray(value) && value.length > 0);
+
+    if (!fields.length && !listFields.length) return null;
+
+    return (
+      <div
+        style={{
+          marginBottom: "12px",
+          padding: "14px",
+          borderRadius: "14px",
+          background: "rgba(79, 142, 255, 0.08)",
+          border: "1px solid rgba(79, 142, 255, 0.22)",
+        }}
+      >
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+            gap: "10px",
+            marginBottom: listFields.length ? "12px" : 0,
+          }}
+        >
+          {fields.map(([label, value]) => (
+            <div
+              key={label}
+              style={{
+                padding: "10px 12px",
+                borderRadius: "10px",
+                background: "rgba(8, 15, 29, 0.45)",
+                border: "1px solid rgba(255,255,255,0.08)",
+              }}
+            >
+              <div style={{ fontSize: "0.72rem", color: "#7e8fa8", marginBottom: "4px", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                {label}
+              </div>
+              <div style={{ fontSize: "0.92rem", color: "#e8eef7", lineHeight: 1.45, whiteSpace: "pre-wrap" }}>
+                {String(value)}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {listFields.length > 0 && (
+          <div style={{ display: "grid", gap: "10px" }}>
+            {listFields.map(([label, value]) => (
+              <div key={label}>
+                <div style={{ fontSize: "0.74rem", color: "#7e8fa8", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                  {label}
+                </div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                  {value.map((item, index) => (
+                    <span
+                      key={`${label}-${index}`}
+                      style={{
+                        padding: "7px 10px",
+                        borderRadius: "999px",
+                        background: "rgba(255,255,255,0.06)",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                        color: "#dbe6f5",
+                        fontSize: "0.84rem",
+                        lineHeight: 1.35,
+                      }}
+                    >
+                      {typeof item === "string" ? item : JSON.stringify(item)}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+
   if (isUser) {
     return (
       <div className={styles.userRow}>
@@ -137,6 +233,7 @@ export default function ChatMessage({ msg }) {
           </div>
         ) : (
           <>
+            {renderStructuredData(msg.structured)}
             <div
               className={styles.assistantText}
               dangerouslySetInnerHTML={{ __html: renderMarkdown(msg.content) }}
