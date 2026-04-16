@@ -57,14 +57,14 @@ function buildSystemPrompt(contextChunks, chartHint) {
 
   const chartInstruction = chartHint
     ? [
-      "CHART REQUIRED: At the very end of your response, after all text, output the chart JSON in EXACTLY this format:",
-      "```chart",
-      '{"type":"bar","title":"My Chart","labels":["A","B","C"],"datasets":[{"label":"Value","data":[1,2,3]}]}',
-      "```",
-      "Replace the example with real data from the CRM. Valid types: bar, line, doughnut, pie.",
-      "CRITICAL: The opening ``` must be on its own line. The JSON must be on its own line. The closing ``` must be on its own line.",
-      "Do NOT inline the JSON on the same line as the backticks.",
-    ].join("\n")
+        "CHART REQUIRED: At the very end of your response, after all text, output the chart JSON in EXACTLY this format:",
+        "```chart",
+        '{"type":"bar","title":"My Chart","labels":["A","B","C"],"datasets":[{"label":"Value","data":[1,2,3]}]}',
+        "```",
+        "Replace the example with real data from the CRM. Valid types: bar, line, doughnut, pie.",
+        "CRITICAL: The opening ``` must be on its own line. The JSON must be on its own line. The closing ``` must be on its own line.",
+        "Do NOT inline the JSON on the same line as the backticks.",
+      ].join("\n")
     : "Do NOT output any chart JSON or code blocks.";
 
   return `You are SalesIQ, an expert AI sales analyst embedded in a CRM. You help sales reps understand their pipeline, analyze call recordings, summarize deals, and provide strategic recommendations.
@@ -283,9 +283,53 @@ export function stripChartBlock(text) {
     .trim();
 }
 
+// ── Local Whisper server endpoint ─────────────────────────────
+const LOCAL_WHISPER_URL = "http://127.0.0.1:8787/transcribe";
+let useLocalWhisper = true; // Will flip to false if local server is unreachable
+
 export async function transcribeAudioBlob(apiKey, audioBlob) {
+  const fileName = `live-${Date.now()}.webm`;
+
+  // ── Try local Whisper server first ──
+  if (useLocalWhisper) {
+    try {
+      const formData = new FormData();
+      formData.append("file", new File([audioBlob], fileName, { type: audioBlob.type || "audio/webm" }));
+
+      const resp = await fetch(LOCAL_WHISPER_URL, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!resp.ok) {
+        throw new Error(`Local Whisper returned ${resp.status}`);
+      }
+
+      const data = await resp.json();
+      const text = (data.text || "").trim();
+      console.log("[Whisper] Local transcription:", text.slice(0, 60));
+      return {
+        text,
+        duration: Number(data.duration || 0),
+        segments: Array.isArray(data.segments) ? data.segments : []
+      };
+    } catch (err) {
+      // If it's a network error (server not running), fall back to Groq
+      if (err.message?.includes("Failed to fetch") || err.message?.includes("NetworkError") || err.message?.includes("ECONNREFUSED")) {
+        console.warn("[Whisper] Local server unreachable, falling back to Groq. Start the local server: cd whisper_server && python server.py");
+        useLocalWhisper = false;
+      } else {
+        // Server is up but returned an error — still try to use it next time
+        console.warn("[Whisper] Local transcription error:", err.message);
+        throw new Error(`Local transcription failed: ${err.message}`);
+      }
+    }
+  }
+
+  // ── Fallback: Groq cloud Whisper ──
+  console.log("[Whisper] Using Groq cloud fallback");
   const client = getGroqClient(apiKey);
-  const file = new File([audioBlob], `live-${Date.now()}.webm`, { type: audioBlob.type || "audio/webm" });
+  const file = new File([audioBlob], fileName, { type: audioBlob.type || "audio/webm" });
 
   let data;
   try {
@@ -644,80 +688,77 @@ function normalizeLiveInsights(raw, transcriptFallback) {
   return result;
 }
 
-// ── Ollama local inference for Live Assist ──────────────────────────
-// Uses Ollama's local API at localhost:11434 with deepseek-r1:8b model.
-// Only the live assist analysis runs locally; chat & transcription stay on Groq.
-
-const OLLAMA_BASE_URL = "/ollama";
-const OLLAMA_MODEL = "deepseek-r1:8b";
-
-async function callOllama(messages, options = {}) {
-  const url = `${OLLAMA_BASE_URL}/api/chat`;
-
-  const body = {
-    model: OLLAMA_MODEL,
-    messages,
-    stream: false,
-    format: "json",
-    options: {
-      temperature: options.temperature ?? 0.3,
-      num_predict: options.max_tokens ?? 900
-    }
-  };
-
-  console.log("[LiveAssist/Ollama] Sending request to", url, "model:", OLLAMA_MODEL);
-
-  let response;
-  try {
-    response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    });
-  } catch (err) {
-    throw new Error(
-      `Cannot reach Ollama at ${OLLAMA_BASE_URL}. Make sure Ollama is running locally. (${err.message})`
-    );
-  }
-
-  if (!response.ok) {
-    const errorText = await response.text().catch(() => "");
-    throw new Error(
-      `Ollama API error ${response.status}: ${errorText || response.statusText}`
-    );
-  }
-
-  const data = await response.json();
-  console.log("[LiveAssist/Ollama] Raw response:", data.message);
-
-  const content = data.message?.content;
-  if (!content) {
-    throw new Error("Empty response from Ollama model");
-  }
-
-  return content;
-}
-
 export async function generateLiveAssistInsights(apiKey, payload) {
   const { recentTranscript, dealContext, runningStats, fullTranscriptTail } = payload;
 
   const system = [
     "You are a real-time sales co-pilot for live web calls.",
-    "Return ONLY valid JSON with no markdown fences and no extra text.",
-    "The JSON MUST contain these exact keys with populated values:",
-    "  transcriptWindow (string), headline (string), nextBestAction (string),",
-    "  suggestedResponses (array of strings, 1-3 items),",
-    "  strategicTips (array of strings, 1-3 items),",
-    "  alerts (array of strings, 0-3 items),",
-    "  intentSignals (array of {label, confidence, evidence}),",
-    "  riskSignals (array of {label, severity, evidence}),",
-    "  conversationAnalysis ({talkRatioRep, talkRatioCustomer, interruptions, pace})",
     "",
-    "Keep content concise, tactical, and actionable in-call.",
-    "Prioritize the most recent utterances: treat the latest 1-2 lines of RECENT TRANSCRIPT as highest priority.",
-    "Do not repeat stale guidance if context changed; refresh suggestions to match what was just said.",
-    "When transcript evidence is thin, be explicit with low confidence and avoid hallucination.",
-    "Always populate every field — never return empty arrays if you can make reasonable inferences."
+    "CRITICAL RULES:",
+    "1. Return ONLY valid JSON. No markdown, no code fences, no extra text before or after the JSON.",
+    "2. You MUST use EXACTLY the field names shown below. Do NOT rename, nest, or wrap them.",
+    "3. Every field is REQUIRED. Never omit any field.",
+    "4. Keep all text content concise, tactical, and actionable for an in-call sales rep.",
+    "5. Prioritize the most recent utterances in the transcript.",
+    "6. Do not repeat stale guidance; refresh suggestions to match what was just said.",
+    "7. When transcript evidence is thin, use low confidence values and avoid hallucination.",
+    "",
+    "STRICT RESPONSE FORMAT — you MUST return exactly this JSON structure every time:",
+    "",
+    "{",
+    '  "transcriptWindow": "<the exact transcript snippet you analyzed>",',
+    '  "headline": "<one-line coaching insight or observation>",',
+    '  "intentSignals": [',
+    '    {"label": "<signal name>", "confidence": <0-100>, "evidence": "<quote or reason>"}',
+    "  ],",
+    '  "riskSignals": [',
+    '    {"label": "<risk name>", "severity": "<low|medium|high>", "evidence": "<quote or reason>"}',
+    "  ],",
+    '  "conversationAnalysis": {',
+    '    "talkRatioRep": <0-100>,',
+    '    "talkRatioCustomer": <0-100>,',
+    '    "interruptions": "<none|low|moderate|high>",',
+    '    "pace": "<slow|balanced|fast>"',
+    "  },",
+    '  "suggestedResponses": ["<response 1>", "<response 2>"],',
+    '  "strategicTips": ["<tip 1>", "<tip 2>"],',
+    '  "alerts": ["<alert 1>"],',
+    '  "nextBestAction": "<single recommended next action>"',
+    "}",
+    "",
+    "EXAMPLE RESPONSE:",
+    '{',
+    '  "transcriptWindow": "So the pricing for the enterprise plan is flexible based on seats.",',
+    '  "headline": "Customer is evaluating pricing — anchor on ROI",',
+    '  "intentSignals": [',
+    '    {"label": "Pricing inquiry", "confidence": 85, "evidence": "Asked about enterprise plan pricing"},',
+    '    {"label": "Buying signal", "confidence": 60, "evidence": "Mentioned team size and rollout timeline"}',
+    '  ],',
+    '  "riskSignals": [',
+    '    {"label": "Budget concern", "severity": "medium", "evidence": "Mentioned needing approval from finance"}',
+    '  ],',
+    '  "conversationAnalysis": {',
+    '    "talkRatioRep": 55,',
+    '    "talkRatioCustomer": 45,',
+    '    "interruptions": "low",',
+    '    "pace": "balanced"',
+    '  },',
+    '  "suggestedResponses": [',
+    '    "Based on similar teams, customers typically see 3x ROI within the first quarter.",',
+    '    "Would it help if I shared a cost-comparison breakdown you could forward to your finance team?"',
+    '  ],',
+    '  "strategicTips": [',
+    '    "Shift from price to value. Highlight case studies with measurable ROI.",',
+    '    "Ask about their current solution costs to create a comparison anchor."',
+    '  ],',
+    '  "alerts": ["Customer may need internal buy-in — offer enablement materials."],',
+    '  "nextBestAction": "Ask: What does your evaluation process look like from here?"',
+    '}',
+    "",
+    "REMEMBER: Use EXACTLY these field names: transcriptWindow, headline, intentSignals, riskSignals, conversationAnalysis, suggestedResponses, strategicTips, alerts, nextBestAction.",
+    "DO NOT wrap the response in any outer object like 'coachingOutput', 'output', 'payload', 'data', or 'result'.",
+    "DO NOT use alternative field names like 'suggestions', 'tips', 'recommendation', etc.",
+    "Return the flat JSON object directly."
   ].join("\n");
 
   const user = [
@@ -733,7 +774,7 @@ export async function generateLiveAssistInsights(apiKey, payload) {
     "RUNNING STATS:",
     JSON.stringify(runningStats || {}, null, 2),
     "",
-    "Generate concise live coaching JSON for the sales rep now."
+    "Generate concise live coaching outputs for the sales rep now."
   ].join("\n");
 
   const messages = [
@@ -741,15 +782,48 @@ export async function generateLiveAssistInsights(apiKey, payload) {
     { role: "user", content: user }
   ];
 
-  const raw = await callOllama(messages, {
-    temperature: 0.3,
-    max_tokens: 900
-  });
+  if (liveAssistSchemaMode !== "disabled") {
+    try {
+      const raw = await tryModel(apiKey, messages, {
+        temperature: 0.3,
+        max_tokens: 900,
+        response_format: {
+          type: "json_schema",
+          json_schema: LIVE_ASSIST_JSON_SCHEMA
+        }
+      });
 
+      liveAssistSchemaMode = "enabled";
+      const parsed = safeJsonParse(raw);
+      if (!parsed) {
+        throw new Error("Live analysis returned invalid JSON");
+      }
+      return normalizeLiveInsights(parsed, recentTranscript);
+    } catch (err) {
+      const msg = (err?.message || "").toLowerCase();
+      const schemaUnsupported =
+        msg.includes("response_format") ||
+        msg.includes("json_schema") ||
+        msg.includes("invalid_request_error") ||
+        msg.includes("unsupported");
+
+      if (schemaUnsupported) {
+        liveAssistSchemaMode = "disabled";
+      } else {
+        liveAssistSchemaMode = "unknown";
+      }
+    }
+  }
+
+  // Compatible fallback path to avoid repeated 400s on runtimes that don't accept json_schema.
+  const raw = await tryModel(apiKey, messages, {
+    temperature: 0.3,
+    max_tokens: 900,
+    response_format: { type: "json_object" }
+  });
   const parsed = safeJsonParse(raw);
   if (!parsed) {
-    throw new Error("Ollama live analysis returned invalid JSON: " + raw.slice(0, 200));
+    throw new Error("Live analysis returned invalid JSON");
   }
   return normalizeLiveInsights(parsed, recentTranscript);
 }
-
