@@ -2,10 +2,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { generateLiveAssistInsights, transcribeAudioBlob } from "../services/gemini";
 import styles from "./LiveAssistView.module.css";
 
-const CAPTURE_SLICE_MS = 3500;
+const CAPTURE_SLICE_MS = 5000;
 const ROLLING_WINDOW_SECONDS = 30;
-const MIN_ANALYSIS_INTERVAL_MS = 2500;
-const ANALYSIS_TICK_MS = 3000;
+const MIN_ANALYSIS_INTERVAL_MS = 12000;
+const ANALYSIS_TICK_MS = 15000;
 const MIN_TRANSCRIBE_BLOB_BYTES = 3000;
 const MIN_ANALYSIS_WORDS = 5;
 
@@ -282,7 +282,7 @@ export default function LiveAssistView({ apiKey, deals }) {
     analyzeTimerRef.current = setTimeout(async () => {
       analyzeTimerRef.current = null;
       await runAnalysisRef.current();
-    }, 1200);
+    }, 5000);
   }
 
   async function drainQueue() {
